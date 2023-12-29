@@ -1,7 +1,10 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 public class Main {
+
 	public static void main(String[] args) {
 		System.out.println("== 프로그램 시작 == ");
 		Scanner sc = new Scanner(System.in);
@@ -20,11 +23,12 @@ public class Main {
 			if (cmd.equals("article write")) {
 				System.out.println("==게시글 작성==");
 				int id = lastArticleId + 1;
+				String regDate = Util.getNowDate_TimeStr();
 				System.out.print("제목 : ");
 				String title = sc.nextLine();
 				System.out.print("내용 : ");
 				String body = sc.nextLine();
-				Article article = new Article(id, title, body);
+				Article article = new Article(id, regDate, title, body);
 				articles.add(article);
 				System.out.printf("%d번 글이 생성 되었습니다.\n", id);
 				lastArticleId++;
@@ -53,20 +57,25 @@ public class Main {
 					continue;
 				}
 
-				boolean found = false;
+				Article foundArticle = null;
 
 				for (int i = 0; i < articles.size(); i++) {
 					Article article = articles.get(i);
 					if (article.getId() == id) {
-						found = true;
+						foundArticle = article;
 						break;
 					}
 				}
 
-				if (found == false) {
+				if (foundArticle == null) {
 					System.out.printf("%d번 게시글은 없습니다\n", id);
 				} else {
-					System.out.println("너 찾는거 있더라");
+					System.out.println("번호 : " + foundArticle.getId());
+					System.out.println("날짜 : " + foundArticle.getRegDate());
+					System.out.println("제목 : " + foundArticle.getTitle());
+					System.out.println("내용 : " + foundArticle.getBody());
+
+
 				}
 
 			} else {
@@ -79,10 +88,12 @@ public class Main {
 }
 class Article {
 	private int id;
+	private String regDate;
 	private String title;
 	private String body;
-	public Article(int id, String title, String body) {
+	public Article(int id, String regDate, String title, String body) {
 		this.id = id;
+		this.regDate = regDate;
 		this.title = title;
 		this.body = body;
 	}
@@ -91,6 +102,13 @@ class Article {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	public String getRegDate() {
+		return regDate;
+	}
+
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
 	}
 	public String getTitle() {
 		return title;
