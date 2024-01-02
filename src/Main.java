@@ -3,13 +3,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 public class Main {
+	static List<Article> articles = new ArrayList<>();
 
 	public static void main(String[] args) {
 		System.out.println("== 프로그램 시작 == ");
+
+		makeTestDate();
+
 		Scanner sc = new Scanner(System.in);
-		int lastArticleId = 0;
-		List<Article> articles = new ArrayList<>();
+		int lastArticleId = 3;
 		while (true) {
 			System.out.print("명령어 > ");
 			String cmd = sc.nextLine().trim();
@@ -29,8 +33,8 @@ public class Main {
 				String title = sc.nextLine();
 				System.out.print("내용 : ");
 				String body = sc.nextLine();
-				
-				Article article = new Article(id, regDate, updateDate, title, body, 0);
+
+				Article article = new Article(id, regDate, updateDate, title, body);
 				articles.add(article);
 				System.out.printf("%d번 글이 생성 되었습니다.\n", id);
 				lastArticleId++;
@@ -42,15 +46,13 @@ public class Main {
 					System.out.println("  번호  /  제목    /   작성일     /   조회");
 					for (int i = articles.size() - 1; i >= 0; i--) {
 						Article article = articles.get(i);
-//						System.out.printf("  %4d  /   %s    /     %s   /   %d\n", article.getId(),
-//						article.getTitle(), article.getRegDate().substring(9), article.getHit());
-				if (Util.getNowDate_TimeStr().split(" ")[0].equals(article.getRegDate().split(" ")[0])) {
-					System.out.printf("  %4d  /   %s    /     %s   /   %d\n", article.getId(),
-							article.getTitle(), article.getRegDate().split(" ")[1], article.getHit());
-				} else {
-					System.out.printf("  %4d  /   %s    /     %s   /   %d\n", article.getId(),
-							article.getTitle(), article.getRegDate().split(" ")[0], article.getHit());
-				}
+						if (Util.getNowDate_TimeStr().split(" ")[0].equals(article.getRegDate().split(" ")[0])) {
+							System.out.printf("  %4d  /   %s    /     %s   /   %d\n", article.getId(),
+									article.getTitle(), article.getRegDate().split(" ")[1], article.getHit());
+						} else {
+							System.out.printf("  %4d  /   %s    /     %s   /   %d\n", article.getId(),
+									article.getTitle(), article.getRegDate().split(" ")[0], article.getHit());
+						}
 
 					}
 				}
@@ -91,7 +93,7 @@ public class Main {
 				System.out.println("조회 : " + foundArticle.getHit());
 
 				foundArticle.setHit(foundArticle.getHit() + 1);
-				
+
 			} else if (cmd.startsWith("article delete")) {
 
 				String[] cmdDiv = cmd.split(" ");
@@ -169,7 +171,16 @@ public class Main {
 		System.out.println("== 프로그램 끝 == ");
 		sc.close();
 	}
+
+	private static void makeTestDate() {
+		System.out.println("테스트를 위한 데이터를 생성합니다.");
+		articles.add(new Article(1, "2023-12-12 12:12:12", Util.getNowDate_TimeStr(), "제목1", "내용1", 11));
+		articles.add(new Article(2, "2024-01-01 12:12:12", Util.getNowDate_TimeStr(), "제목2", "내용2", 22));
+		articles.add(new Article(3, Util.getNowDate_TimeStr(), Util.getNowDate_TimeStr(), "제목3", "내용3", 33));
+	}
+
 }
+
 class Article {
 	private int id;
 	private String regDate;
@@ -177,6 +188,10 @@ class Article {
 	private String body;
 	private String updateDate;
 	private int hit;
+	public Article(int id, String regDate, String updateDate, String title, String body) {
+		this(id, regDate, updateDate, title, body, 0);
+	}
+	
 
 	public Article(int id, String regDate, String updateDate, String title, String body, int hit) {
 		this.id = id;
@@ -186,12 +201,15 @@ class Article {
 		this.body = body;
 		this.hit = hit;
 	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getRegDate() {
 		return regDate;
 	}
@@ -199,6 +217,7 @@ class Article {
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
+
 	public String getUpdateDate() {
 		return updateDate;
 	}
@@ -210,15 +229,19 @@ class Article {
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getBody() {
 		return body;
 	}
+
 	public void setBody(String body) {
 		this.body = body;
 	}
+
 	public int getHit() {
 		return hit;
 	}
